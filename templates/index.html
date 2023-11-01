@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FlaskApp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="title">
+        <h1>SJSU+RMP Class Search</h1>
+    </div>
+    <div class="search-wrapper">
+        <div class="search">
+            <h3>Course Code</h3>
+            <input type="text" class="text-input" id="filter" placeholder="search" />
+        </div>
+    </div>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Section</th>
+                <th>Class Number</th>
+                <th>Mode of Instruction</th>
+                <th>Course Title</th>
+                <th>Units</th>
+                <th>Type</th>
+                <th>Days</th>
+                <th>Times</th>
+                <th>Instructor</th>
+                <th>Instructor Rating</th>
+                <th>Location</th>
+                <th>Dates</th>
+                <th>Open Seats</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for class in paginated_classes %}
+            <tr>
+                <td class="class-section">{{ class[0] }}</td>
+                <td class="class-number">{{ class[1] }}</td>
+                <td class="mode-instruct">{{ class[2] }}</td>
+                <td class="course-title">{{ class[3] }}</td>
+                <td class="class-units">{{ class[4] }}</td>
+                <td class="class-type">{{ class[5] }}</td>
+                <td class="class-days">{{ class[6] }}</td>
+                <td class="class-times">{{ class[7] }}</td>
+                <td class="class-instruct">
+                    {% if class[8] in teachers_map %}
+                        <!-- <a href="{{ url_for('show_teacher_page', name=class[8], class_section=class[0], howToSort='Recent') }}">{{ class[8] }}</a></td> -->
+                        <a href="https://ratemyprofessors.com/professor/{{ teachers_map[class[8]] }}" target="_blank">{{ class[8] }}</a>
+                    {% else %}
+                        {{ class[8] }}
+                    {% endif %}
+                <td class="instruct-rating"><b>{{ class[9] }}</b></td>
+                <td class="class-location">{{ class[10] }}</td>
+                <td class="class-dates">{{ class[11] }}</td>
+                <td class="open-seats">{{ class[12] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="?page={{ page - 1 }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page }}</span>
+        <a href="?page={{ page + 1 }}">Next</a>
+    </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='Trie.js') }}"></script>
+<script type=text/javascript>
+    let instruct_ratings = document.querySelectorAll(".instruct-rating");
+    // logic to update the color of the instructor rating on the table depending on their rating
+    for (let rating_tag of instruct_ratings) {
+        if (isNaN(rating_tag.innerText)) continue;
+        let rating = parseFloat(rating_tag.innerText);
+        if (0 <= rating && rating < 3) {
+            rating_tag.style.backgroundColor = "rgb(255, 156, 156)"; // red
+        } else if (3 <= rating && rating < 3.7) {
+            rating_tag.style.backgroundColor = "rgb(255, 241, 112)"; // yellow
+        } else {
+            rating_tag.style.backgroundColor = "rgb(127, 246, 195)"; // green
+        }
+    }
+
+    let all_classes = JSON.parse('{{ all_classes | tojson }}');
+    // for (let [i, x] of all_classes.entries()) {
+    //     let splitted = x[0].split(" ");
+    //     all_classes[i] = splitted[0] + " " + splitted[1];
+    // }
+    // all_classes = [...new Set(all_classes)];
+
+    all_classes = all_classes.map(x => x[0]);
+
+
+    const trie = new Trie();
+    const searchBar = document.querySelector(".text-input");
+
+
+    // Insert data into the Trie
+    all_classes.forEach(classTitle => trie.insert(classTitle));
+
+    // Event listener for keyup
+    searchBar.addEventListener("keyup", function () {
+        const searchText = searchBar.value.trim().toLowerCase();
+        console.log(searchText);
+        const results = trie.search(searchText);
+        console.log(results);
+    });
+</script>
+</html>

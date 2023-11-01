@@ -1,0 +1,72 @@
+h1 {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  font-family: 'Nunito Sans',Verdana,sans-serif;
+  font-weight: 300;
+  font-size: 40px;
+  color: #080808;
+}
+
+.title {
+    margin-top: 15px;
+}
+
+.title h1 {
+  text-transform: capitalize;
+  text-align:center;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 30%; 
+}
+
+h3 {
+  font-size: 20px; 
+  white-space: nowrap; /* Ensure the text doesn't wrap to the next line */
+  flex: 1; 
+  margin-right: 10px;
+}
+
+.text-input {
+  width: 100%; /* Take up the remaining available width */
+  border: 1.5px solid #00B4CC;
+  padding: 5px;
+  height: 25px;
+  border-radius: 5px;
+  outline: none;
+}
+
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+}
+
+.styled-table thead tr {
+    background-color: #0055a2;
+    color: #ffffff;
+    text-align: left;
+    border-bottom: 1px solid #555;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
