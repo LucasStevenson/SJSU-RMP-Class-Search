@@ -45,9 +45,9 @@
                 <td class="class-days">{{ class[6] }}</td>
                 <td class="class-times">{{ class[7] }}</td>
                 <td class="class-instruct">
-                    {% if class[8] in teachers_map %}
+                    {% if class[8] in teacherName_to_legacyID %}
                         <!-- <a href="{{ url_for('show_teacher_page', name=class[8], class_section=class[0], howToSort='Recent') }}">{{ class[8] }}</a></td> -->
-                        <a href="https://ratemyprofessors.com/professor/{{ teachers_map[class[8]] }}" target="_blank">{{ class[8] }}</a>
+                        <a href="https://ratemyprofessors.com/professor/{{ teacherName_to_legacyID[class[8]] }}" target="_blank">{{ class[8] }}</a>
                     {% else %}
                         {{ class[8] }}
                     {% endif %}
@@ -65,13 +65,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type=text/javascript>
     let all_classes = JSON.parse('{{ all_classes | tojson }}');
-    let teacherName_to_legacyID; // ex. { "Bob Smith": 123456 }
-
-    // fetch the teacherName_to_legacyID dictionary from the backend
-    document.addEventListener("DOMContentLoaded", async () => {
-        let data = await fetch(`/api/data/teacherName_to_legacyID`);
-        teacherName_to_legacyID = await data.json();
-    });
+    let teacherName_to_legacyID = JSON.parse('{{ teacherName_to_legacyID | tojson }}'); // ex. { "Bob Smith": 123456, ... }
 
     let page = 1;
     const RESULTS_PER_PAGE = 20;

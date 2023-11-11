@@ -103,10 +103,9 @@ def select_teacher_data(name):
     cur.close()
     return res
 
-# def select_all_teachers():
-def select_legacyID_and_teacherName():
+def select_teacherName_and_legacyID():
     cur = conn.cursor()
-    cur.execute("SELECT legacy_id, name FROM teachers");
+    cur.execute("SELECT name, legacy_id FROM teachers");
     res = cur.fetchall()
     cur.close()
     return res
