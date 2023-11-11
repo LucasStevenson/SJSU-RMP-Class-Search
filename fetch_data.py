@@ -39,8 +39,7 @@ async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
             [[ review_id, teacher_id, class, comment, date, clarityRating, difficultyRating, grade, helpfulRating, isForOnlineClass, ratingTags ], ...]
         )
     """
-    # get basic teacher info for all teachers
-    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=50)) as session:
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=40)) as session:
         # get teacher general info
         tasks = []
         for teacher_name in teacher_names:
@@ -48,9 +47,12 @@ async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
         all_teacher_info_unparsed = await asyncio.gather(*tasks)
         # get teacher reviews
         tasks = []
-        for teacher_info in all_teacher_info_unparsed:
-            for teacher in teacher_info:
-                cursor, teacher = teacher["cursor"], teacher["node"]
+        for teacher_info_arr in all_teacher_info_unparsed:
+            # teacher_info_arr is an array of objects, where each obj contains data for a specific teacher
+            # most the time, this array is of length 1
+            # if two teachers have the same name, this array will have more than 1 element
+            for teacher_obj in teacher_info_arr:
+                cursor, teacher = teacher_obj["cursor"], teacher_obj["node"]
                 teacher_id = teacher["id"]
                 tasks.append(asyncio.ensure_future(get_teacher_reviews(teacher_id, cursor, session)))
         all_teacher_reviews_unparsed = await asyncio.gather(*tasks)
@@ -68,8 +70,8 @@ def _parse_teacher_info(all_teacher_info):
         [id, firstName, lastname, department, legacyId, avgRating, avgDifficulty, wouldTakeAgainPercent]
     """
     cleaned_teacher_info = []
-    for teacher_info in all_teacher_info:
-        for teacher in teacher_info:
+    for teacher_info_arr in all_teacher_info:
+        for teacher in teacher_info_arr:
             teacher = teacher["node"]
             cleaned_teacher_info.append([teacher["id"], f"{teacher['firstName']} {teacher['lastName']}", teacher["department"], teacher["legacyId"], teacher["avgRating"], teacher["avgDifficulty"], teacher["wouldTakeAgainPercent"]])
     return cleaned_teacher_info
