@@ -32,13 +32,10 @@ def scrape_reviews_data_into_db(all_teacher_reviews):
 
 
 # FOR TESTING
-conn = database.init_db()
+database.init_db()
 print("Scraping class data into db...")
 scrape_classData_into_db(URL)
-cur = conn.cursor()
-cur.execute("SELECT instructor FROM classes")
-teacher_names = sorted(set(list((map(lambda x: x[0], cur.fetchall())))))
-cur.close()
+teacher_names = sorted(set(list((map(lambda x: x[0], database.select_all_instructorNames())))))
 print("fetching data from rmp...")
 all_teacher_info, all_teacher_reviews = asyncio.run(get_allTeacherInfo_and_allTeacherReviews(teacher_names))
 print("Scraping teacher info into db...")

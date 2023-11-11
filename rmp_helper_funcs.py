@@ -28,7 +28,7 @@ async def get_teacher_info(teacher, session):
 
     async with session.post("https://ratemyprofessors.com/graphql", headers=headers, json=teacher_payload) as r:
         # get the teacher information
-        teacher_info = await r.json()
+        teacher_info = await r.json(content_type=None)
         data = teacher_info["data"]["newSearch"]["teachers"]["edges"]
         if len(data) == 0:
             return data
@@ -38,23 +38,31 @@ async def get_teacher_info(teacher, session):
             teacher_name_splitted = teacher.split()
             firstName, lastName = teacher_name_splitted[0], " ".join(teacher_name_splitted[1:])
             data[0]['node']["firstName"], data[0]['node']["lastName"] = firstName, lastName
-        # since sometimes the api sometimes returns incorrect data, scrape the rating manually when we know as a fact that the data is wrong
-        # this does not catch everything, but it's better than nothing
-        # the reason we don't manually scrape it everytime is because that causes too many concurrent connections and will result in problems
-        avgRating, wouldTakeAgainPercent = data[0]["node"]["avgRating"], data[0]["node"]["wouldTakeAgainPercent"]
-        if avgRating == 0 and wouldTakeAgainPercent != -1: # then we know the avgRating value is def wrong
-            print(teacher)
-            legacyId = data[0]["node"]["legacyId"]
-            rating = await _get_teacherRating_with_beautifulSoup(legacyId, session) # manually scrape the data with beautifulsoup
-            data[0]["node"]["avgRating"] = rating
+        # since sometimes the api sometimes returns incorrect data, scrape the rating manually
+        legacyId = data[0]["node"]["legacyId"]
+        rating = await _get_teacherRating_with_beautifulSoup(legacyId, session) # scrape the data with beautifulsoup
+        data[0]["node"]["avgRating"] = rating
         return data
 
 async def _get_teacherRating_with_beautifulSoup(legacyId, session):
-    async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
-        content = await response.text()
-        bs = bs4.BeautifulSoup(content, "html.parser")
-        rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2').text
-        return rating
+    try:
+        async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
+            content = await response.text()
+            bs = bs4.BeautifulSoup(content, "html.parser")
+            rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2').text
+            return rating
+    except Exception as e:
+        print("ERROR", e)
+        print(legacyId)
+
+# async def _get_teacherRating_with_beautifulSoup(legacyId, session):
+#     async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
+#         content = await response.text()
+#         print(content)
+#         bs = bs4.BeautifulSoup(content, "html.parser")
+#         print(legacyId)
+#         rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2').text
+#         return rating
 
 async def get_teacher_reviews(id, cursor, session):
     """Gets the teacher reviews as json data

@@ -4,7 +4,7 @@ import bs4
 import asyncio
 import aiohttp
 
-from rmp_helper_funcs import get_teacher_info, get_teacher_reviews
+from rmp_helper_funcs import get_teacher_info, get_teacher_reviews, _get_teacherRating_with_beautifulSoup
 
 def get_classes_semester_data(url):
     """Gets all the classes from SJSU webpage
@@ -40,7 +40,7 @@ async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
         )
     """
     # get basic teacher info for all teachers
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=50)) as session:
         # get teacher general info
         tasks = []
         for teacher_name in teacher_names:

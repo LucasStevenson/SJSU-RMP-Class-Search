@@ -63,45 +63,19 @@
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type=text/javascript>
+    let all_classes = JSON.parse('{{ all_classes | tojson }}');
+    let teacherName_to_legacyID; // ex. { "Bob Smith": 123456 }
+
+    // fetch the teacherName_to_legacyID dictionary from the backend
+    document.addEventListener("DOMContentLoaded", async () => {
+        let data = await fetch(`/api/data/teacherName_to_legacyID`);
+        teacherName_to_legacyID = await data.json();
+    });
+
+    let page = 1;
+    const RESULTS_PER_PAGE = 20;
+</script>
 <script src="{{ url_for('static', filename='js/Trie.js') }}"></script>
 <script src="{{ url_for('static', filename='js/LiveSearch.js') }}"></script>
-<script type=text/javascript>
-    function addColorToTable() {
-        let instruct_ratings = document.querySelectorAll(".instruct-rating");
-        // logic to update the color of the instructor rating on the table depending on their rating
-        for (let rating_tag of instruct_ratings) {
-            if (isNaN(rating_tag.innerText)) continue;
-            let rating = parseFloat(rating_tag.innerText);
-            if (0 <= rating && rating < 3) {
-                rating_tag.style.backgroundColor = "rgb(255, 156, 156)"; // red
-            } else if (3 <= rating && rating < 3.7) {
-                rating_tag.style.backgroundColor = "rgb(255, 241, 112)"; // yellow
-            } else {
-                rating_tag.style.backgroundColor = "rgb(127, 246, 195)"; // green
-            }
-        }
-    }
-    addColorToTable();
-
-    let all_classes = JSON.parse('{{ all_classes | tojson }}');
-    let courseCode_to_classData = JSON.parse('{{ courseCode_to_classData | tojson }}');
-    let teachers_map = JSON.parse('{{ teachers_map | tojson }}');
-
-    all_classes = all_classes.map(x => x[0]); // only want to search via course codes. Ex. CS 152
-    const trie = new Trie();
-    // insert data into the trie
-    all_classes.forEach(classTitle => trie.insert(classTitle)); 
-
-    const searchBar = document.querySelector(".text-input");
-
-    // Event listener for keyup
-    searchBar.addEventListener("keyup", function () {
-        const searchText = searchBar.value.trim().toLowerCase();
-        const results = trie.search(searchText);
-        console.log(searchText);
-        console.log(results);
-        updateTable(results, courseCode_to_classData, teachers_map);
-        addColorToTable();
-    });
-</script>
 </html>

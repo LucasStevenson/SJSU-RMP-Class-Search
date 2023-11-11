@@ -52,7 +52,7 @@ def init_db():
     # how to make it update automatically on new semester?
     cur.execute("""
         CREATE TABLE IF NOT EXISTS classes(
-            section TEXT,
+            section TEXT PRIMARY KEY,
             class_number INTEGER,
             mode_instruction TEXT,
             course_title TEXT,
@@ -68,7 +68,6 @@ def init_db():
         )
     """)
     cur.close()
-    return conn
 
 @unique_skip
 def insert_class_into_db(section, class_number, mode_instruction, course_title, units, class_type, days, times, instructor, location, dates, open_seats):
@@ -101,15 +100,14 @@ def select_teacher_data(name):
     cur = conn.cursor()
     cur.execute("SELECT * FROM teachers WHERE name = ?", (name,))
     res = cur.fetchall()
-    conn.commit()
     cur.close()
     return res
 
-def select_all_teachers():
+# def select_all_teachers():
+def select_legacyID_and_teacherName():
     cur = conn.cursor()
     cur.execute("SELECT legacy_id, name FROM teachers");
     res = cur.fetchall()
-    conn.commit()
     cur.close()
     return res
 
@@ -117,6 +115,12 @@ def select_all_classes():
     cur = conn.cursor()
     cur.execute("SELECT * FROM classes")
     res = cur.fetchall()
-    conn.commit()
+    cur.close()
+    return res
+
+def select_all_instructorNames():
+    cur = conn.cursor()
+    cur.execute("SELECT instructor FROM classes")
+    res = cur.fetchall()
     cur.close()
     return res
