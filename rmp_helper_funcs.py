@@ -38,7 +38,7 @@ async def get_teacher_info(teacher, session):
             teacher_name_splitted = teacher.split()
             firstName, lastName = teacher_name_splitted[0], " ".join(teacher_name_splitted[1:])
             data[0]['node']["firstName"], data[0]['node']["lastName"] = firstName, lastName
-        # since sometimes the api sometimes returns incorrect data, scrape the rating manually
+        # since the api sometimes returns incorrect data, scrape the rating manually
         legacyId = data[0]["node"]["legacyId"]
         rating = await _get_teacherRating_with_beautifulSoup(legacyId, session) # scrape the data with beautifulsoup
         data[0]["node"]["avgRating"] = rating
@@ -54,15 +54,6 @@ async def _get_teacherRating_with_beautifulSoup(legacyId, session):
     except Exception as e:
         print("ERROR", e)
         print(legacyId)
-
-# async def _get_teacherRating_with_beautifulSoup(legacyId, session):
-#     async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
-#         content = await response.text()
-#         print(content)
-#         bs = bs4.BeautifulSoup(content, "html.parser")
-#         print(legacyId)
-#         rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2').text
-#         return rating
 
 async def get_teacher_reviews(id, cursor, session):
     """Gets the teacher reviews as json data
