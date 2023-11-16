@@ -123,3 +123,15 @@ def select_all_instructorNames():
     res = cur.fetchall()
     cur.close()
     return res
+
+def select_reviews_data(teacher_name):
+    cur = conn.cursor()
+    cur.execute("""
+            SELECT r.class_name, r.date, r.clarity_rating, r.difficulty_rating, r.grade, r.helpful_rating, r.isOnlineClass 
+            FROM reviews AS r 
+            INNER JOIN teachers as t
+            ON t.teacher_id = r.teacher_id
+            WHERE t.name = ?""", (teacher_name,))
+    res = cur.fetchall()
+    cur.close()
+    return res

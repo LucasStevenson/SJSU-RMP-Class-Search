@@ -14,13 +14,13 @@ def homepage():
     teacherName_to_legacyID = { name: legacyID for name, legacyID in database.select_teacherName_and_legacyID() }
     return render_template("index.html", all_classes=all_classes, teacherName_to_legacyID=teacherName_to_legacyID)
 
-@app.route("/teacher/<name>/<class_section>")
-def show_teacher_page(name, class_section):
+@app.route("/teacher/<name>")
+def show_teacher_page(name):
     # show all the general data that would be on the teacher's rmp page
     # e.g. avgRating, difficultyLevel, wouldTakeAgainPercent, etc
-    class_code = "".join(class_section.split()[0:2])
     teacher_data = database.select_teacher_data(name) # (teacher_id, teacher_name, department, rmp_legacyID, rating, difficulty_level, wouldTakeAgainPercent)
-    return render_template("teacher.html", class_code=class_code, teacher_data=teacher_data)
+    all_reviews = database.select_reviews_data(name)
+    return render_template("teacher.html", all_reviews=all_reviews, teacher_data=teacher_data)
 
 if __name__ == "__main__":
     app.run(debug=True)

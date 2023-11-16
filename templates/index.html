@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>FlaskApp</title>
+    <title>SJSU+RMP Class Search</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
@@ -51,7 +51,7 @@
                     {% else %}
                         {{ class[8] }}
                     {% endif %}
-                <td class="instruct-rating"><b>{{ class[9] }}</b></td>
+                    <td class="instruct-rating"><a href="{{ url_for('show_teacher_page', name=class[8]) }}"><b>{{ class[9] }}</b></a></td>
                 <td class="class-location">{{ class[10] }}</td>
                 <td class="class-dates">{{ class[11] }}</td>
                 <td class="open-seats">{{ class[12] }}</td>
