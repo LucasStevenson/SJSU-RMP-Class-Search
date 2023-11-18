@@ -46,7 +46,6 @@
                 <td class="class-times">{{ class[7] }}</td>
                 <td class="class-instruct">
                     {% if class[8] in teacherName_to_legacyID %}
-                        <!-- <a href="{{ url_for('show_teacher_page', name=class[8], class_section=class[0], howToSort='Recent') }}">{{ class[8] }}</a></td> -->
                         <a href="https://ratemyprofessors.com/professor/{{ teacherName_to_legacyID[class[8]] }}" target="_blank">{{ class[8] }}</a>
                     {% else %}
                         {{ class[8] }}
