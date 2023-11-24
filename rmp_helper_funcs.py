@@ -41,7 +41,8 @@ async def get_teacher_info(teacher, session):
         # since the api sometimes returns incorrect data, scrape the rating manually
         legacyId = data[0]["node"]["legacyId"]
         rating = await _get_teacherRating_with_beautifulSoup(legacyId, session) # scrape the data with beautifulsoup
-        data[0]["node"]["avgRating"] = rating
+        if rating != None: # if rating is none, that means there was some kind of error when trying to scrape the data 
+            data[0]["node"]["avgRating"] = rating
         return data
 
 async def _get_teacherRating_with_beautifulSoup(legacyId, session):

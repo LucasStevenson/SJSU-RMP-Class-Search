@@ -63,3 +63,13 @@ h4 {
     display: block; /* Make each span a block element to appear on a new line */
     font-weight: bold;
 }
+
+.charts-container {
+    display: flex;
+}
+
+.chart-container {
+    flex: 1;
+    margin: 10px;
+    box-sizing: border-box;
+}

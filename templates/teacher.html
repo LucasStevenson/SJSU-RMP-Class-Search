@@ -22,8 +22,13 @@
             </div>
         </div>
     </div>
-    <div class="chart-container" style="position: relative; height:50vh; width:100vw">
-        <canvas id="avgGrades"></canvas>
+    <div class="charts-container">
+        <div class="chart-container grades-container" style="position: relative; height:50vh; width:100vw">
+            <canvas id="avgGrades"></canvas>
+        </div>
+        <div class="chart-container difficulty-container" style="position: relative; height:50vh; width:100vw">
+            <canvas id="avgDifficulties"></canvas>
+        </div>
     </div>
 </body>
 
@@ -37,4 +42,5 @@
     console.log(reviews_data);
 </script>
 <script src="{{ url_for('static', filename='js/TeacherPage/GradeDistribution.js') }}"></script>
+<script src="{{ url_for('static', filename='js/TeacherPage/DifficultyRatingDistribution.js') }}"></script>
 </html>

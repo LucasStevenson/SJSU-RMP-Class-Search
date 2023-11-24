@@ -61,8 +61,8 @@ let labels = Object.keys(class_to_avgGrade);
 let values = Object.values(class_to_avgGrade);
 
 // Create a bar chart
-let ctx = document.getElementById('avgGrades');
-let myBarChart = new Chart(ctx, {
+let gradesCtx = document.getElementById('avgGrades');
+new Chart(gradesCtx, {
     type: 'bar',
     data: {
         labels: labels,
