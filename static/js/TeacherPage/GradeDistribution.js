@@ -103,6 +103,8 @@ new Chart(gradesCtx, {
                     text: 'Average Grade',
                     font: { size: 14, weight: "bold" }
                 },
+                min: 0,
+                max: 4,
                 ticks: {
                     callback: function(value, index, ticks) {
                         return grade_int_to_letter[value];
