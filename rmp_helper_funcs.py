@@ -47,11 +47,15 @@ async def get_teacher_info(teacher, session):
 
 async def _get_teacherRating_with_beautifulSoup(legacyId, session):
     try:
-        async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
-            content = await response.text()
-            bs = bs4.BeautifulSoup(content, "html.parser")
-            rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2').text
-            return rating
+        for i in range(3):
+            async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
+                content = await response.text()
+                bs = bs4.BeautifulSoup(content, "html.parser")
+                rating = bs.find('div', class_='RatingValue__Numerator-qw8sqy-2')
+                if rating == None:
+                    print(f"Fetching data for {legacyId} failed. Retrying...")
+                    continue
+                return rating.text
     except Exception as e:
         print("ERROR", e)
         print(legacyId)
