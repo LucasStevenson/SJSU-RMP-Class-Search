@@ -47,7 +47,7 @@ async def get_teacher_info(teacher, session):
 
 async def _get_teacherRating_with_beautifulSoup(legacyId, session):
     try:
-        for i in range(3):
+        for _ in range(3):
             async with session.get(f"https://ratemyprofessors.com/professor/{legacyId}") as response:
                 content = await response.text()
                 bs = bs4.BeautifulSoup(content, "html.parser")
@@ -56,6 +56,7 @@ async def _get_teacherRating_with_beautifulSoup(legacyId, session):
                     print(f"Fetching data for {legacyId} failed. Retrying...")
                     continue
                 return rating.text
+        print(f"FAILED FETCHING TEACHER RATING FOR {legacyId}")
     except Exception as e:
         print("ERROR", e)
         print(legacyId)
@@ -79,12 +80,10 @@ async def get_teacher_reviews(id, cursor, session):
 async def main(TEACHER):
     async with aiohttp.ClientSession() as session:
         res = await get_teacher_info(TEACHER, session)
-        pprint(res)
-        # pprint(get_teacher_reviews("VGVhY2hlci0yODIyNjEz", "YXJyYXljb25uZWN0aW9uOjA="))
-        # print(res)
+        # pprint(res)
         # print()
-        # res2 = await get_teacher_reviews(res[0]["node"]["id"], res[0]["cursor"], session)
-        # print(res2)
+        res2 = await get_teacher_reviews(res[0]["node"]["id"], res[0]["cursor"], session)
+        pprint(res2)
 
 
 if __name__ == "__main__":

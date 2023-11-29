@@ -41,8 +41,12 @@
     // read in the data passed in from the backend
     let teacher_data = JSON.parse('{{ teacher_data | tojson }}');
     console.log(teacher_data);
-    let reviews_data = JSON.parse('{{ all_reviews | tojson }}'); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
-    console.log(reviews_data);
+    // let reviews_data = JSON.parse('{{ all_reviews | tojson }}'); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
+    let reviews_data = JSON.parse({{ all_reviews | tojson }}); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
+    // console.log(reviews_data.sort((a,b) => b[7]-a[7]));
+
+    let lowest = reviews_data.filter(x => x[2] < 4 && x[7] > x[8]).sort((a,b) => b[7] - a[7])[0];
+    let highest = reviews_data.filter(x => x[2] >= 4 && x[7] > x[8]).sort((a,b) => b[7] - a[7])[0];
 </script>
 <script src="{{ url_for('static', filename='js/TeacherPage/GradeDistribution.js') }}"></script>
 <script src="{{ url_for('static', filename='js/TeacherPage/DifficultyRatingDistribution.js') }}"></script>

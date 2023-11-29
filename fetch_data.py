@@ -90,5 +90,5 @@ def _parse_teacher_reviews(all_teacher_reviews):
         reviews = reviews_json["data"]["node"]["ratings"]["edges"]
         for review_obj in reviews:
             review = review_obj["node"]
-            cleaned_teacher_reviews.append([review["id"], teacher_id, review["class"], review["comment"], review["date"], review["clarityRating"], review["difficultyRating"], review["grade"], review["helpfulRating"], review["isForOnlineClass"], review["ratingTags"]])
+            cleaned_teacher_reviews.append([review["id"], teacher_id, review["class"], review["comment"], review["date"], review["clarityRating"], review["difficultyRating"], review["grade"], review["helpfulRating"], review["isForOnlineClass"], review["ratingTags"], review["thumbsUpTotal"], review["thumbsDownTotal"]])
     return cleaned_teacher_reviews

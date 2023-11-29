@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import database
+import json
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def show_teacher_page(name):
     # e.g. avgRating, difficultyLevel, wouldTakeAgainPercent, etc
     teacher_data = database.select_teacher_data(name) # (teacher_id, teacher_name, department, rmp_legacyID, rating, difficulty_level, wouldTakeAgainPercent)
     all_reviews = database.select_reviews_data(name)
-    return render_template("teacher.html", all_reviews=all_reviews, teacher_data=teacher_data)
+    return render_template("teacher.html", all_reviews=json.dumps(all_reviews), teacher_data=teacher_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
