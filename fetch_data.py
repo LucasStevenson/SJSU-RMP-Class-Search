@@ -13,7 +13,7 @@ def get_classes_semester_data(url):
     RETURNS:
         List of lists. Each list is pretty much a row on the table of classes 
     """
-    r = requests.get(url)
+    r = requests.get(url, timeout=10)
     bs = bs4.BeautifulSoup(r.content, "html.parser")
     class_schedule = bs.find(id="classSchedule")
     thead = class_schedule.find("thead")
