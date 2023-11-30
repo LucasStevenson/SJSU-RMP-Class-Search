@@ -13,20 +13,23 @@ def get_classes_semester_data(url):
     RETURNS:
         List of lists. Each list is pretty much a row on the table of classes 
     """
-    r = requests.get(url)
-    bs = bs4.BeautifulSoup(r.content, "html.parser")
-    class_schedule = bs.find(id="classSchedule")
-    thead = class_schedule.find("thead")
-    headers = [th.get_text() for th in thead.find_all("th", recursive=True)]
-    tbody = class_schedule.find("tbody")
-    class_data = []
-    for tr in tbody.find_all("tr"):
-        data = []
-        for td in tr.find_all("td"):
-            data.append(td.get_text())
-        section, class_number, mode_instruction, course_title, _, units, class_type, days, times, instructor, location, dates, open_seats, _ = data
-        class_data.append([section, class_number, mode_instruction, course_title, units, class_type, days, times, instructor.split("/")[0].strip(), location, dates, open_seats])
-    return class_data
+    try:
+        r = requests.get(url, timeout=10)
+        bs = bs4.BeautifulSoup(r.content, "html.parser")
+        class_schedule = bs.find(id="classSchedule")
+        thead = class_schedule.find("thead")
+        headers = [th.get_text() for th in thead.find_all("th", recursive=True)]
+        tbody = class_schedule.find("tbody")
+        class_data = []
+        for tr in tbody.find_all("tr"):
+            data = []
+            for td in tr.find_all("td"):
+                data.append(td.get_text())
+            section, class_number, mode_instruction, course_title, _, units, class_type, days, times, instructor, location, dates, open_seats, _ = data
+            class_data.append([section, class_number, mode_instruction, course_title, units, class_type, days, times, instructor.split("/")[0].strip(), location, dates, open_seats])
+        return class_data
+    except requests.exceptions.Timeout:
+        print("Timed out")
 
 async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
     """
@@ -39,13 +42,15 @@ async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
             [[ review_id, teacher_id, class, comment, date, clarityRating, difficultyRating, grade, helpfulRating, isForOnlineClass, ratingTags ], ...]
         )
     """
-    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=40)) as session:
+    async def get_all_teacher_info(session):
         # get teacher general info
         tasks = []
         for teacher_name in teacher_names:
             tasks.append(asyncio.ensure_future(get_teacher_info(teacher_name, session)))
         all_teacher_info_unparsed = await asyncio.gather(*tasks)
-        # get teacher reviews
+        return all_teacher_info_unparsed
+
+    async def get_all_teacher_reviews(all_teacher_info_unparsed, session):
         tasks = []
         for teacher_info_arr in all_teacher_info_unparsed:
             # teacher_info_arr is an array of objects, where each obj contains data for a specific teacher
@@ -56,10 +61,13 @@ async def get_allTeacherInfo_and_allTeacherReviews(teacher_names):
                 teacher_id = teacher["id"]
                 tasks.append(asyncio.ensure_future(get_teacher_reviews(teacher_id, cursor, session)))
         all_teacher_reviews_unparsed = await asyncio.gather(*tasks)
+        return all_teacher_reviews_unparsed
 
-    all_teacher_info = _parse_teacher_info(all_teacher_info_unparsed)
-    all_teacher_reviews = _parse_teacher_reviews(all_teacher_reviews_unparsed)
-    return (all_teacher_info, all_teacher_reviews)
+    async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit_per_host=40)) as session:
+        all_teacher_info_unparsed = await get_all_teacher_info(session)
+        all_teacher_reviews_unparsed = await get_all_teacher_reviews(all_teacher_info_unparsed, session)
+
+    return (_parse_teacher_info(all_teacher_info_unparsed), _parse_teacher_reviews(all_teacher_reviews_unparsed))
 
 def _parse_teacher_info(all_teacher_info):
     """Helper function that cleans the array of messy json objects (each the result of calling `get_teacher_info()` function) 
@@ -90,5 +98,5 @@ def _parse_teacher_reviews(all_teacher_reviews):
         reviews = reviews_json["data"]["node"]["ratings"]["edges"]
         for review_obj in reviews:
             review = review_obj["node"]
-            cleaned_teacher_reviews.append([review["id"], teacher_id, review["class"], review["comment"], review["date"], review["clarityRating"], review["difficultyRating"], review["grade"], review["helpfulRating"], review["isForOnlineClass"], review["ratingTags"]])
+            cleaned_teacher_reviews.append([review["id"], teacher_id, review["class"], review["comment"], review["date"], review["clarityRating"], review["difficultyRating"], review["grade"], review["helpfulRating"], review["isForOnlineClass"], review["ratingTags"], review["thumbsUpTotal"], review["thumbsDownTotal"]])
     return cleaned_teacher_reviews

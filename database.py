@@ -44,7 +44,9 @@ def init_db():
             grade TEXT,
             helpful_rating REAL,
             isOnlineClass BOOLEAN CHECK (isOnlineClass IN (0, 1)),
-            rating_tags TEXT
+            rating_tags TEXT,
+            thumbsUp INTEGER,
+            thumbsDown INTEGER
         )
     """)
 
@@ -84,9 +86,9 @@ def insert_teacher_into_db(id, name, department, legacyID, rating, difficulty_le
     cur.close()
 
 @unique_skip
-def insert_review_into_db(review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags):
+def insert_review_into_db(review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags, thumbsUpTotal, thumbsDownTotal):
     cur = conn.cursor()
-    cur.execute("INSERT INTO reviews (review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags))
+    cur.execute("INSERT INTO reviews (review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags, thumbsUp, thumbsDown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (review_id, teacher_id, class_name, comment, date, clarity_rating, difficulty_rating, grade, helpful_rating, isOnlineClass, rating_tags, thumbsUpTotal, thumbsDownTotal))
     conn.commit()
     cur.close()
 
@@ -127,7 +129,7 @@ def select_all_instructorNames():
 def select_reviews_data(teacher_name):
     cur = conn.cursor()
     cur.execute("""
-            SELECT r.class_name, r.date, r.clarity_rating, r.difficulty_rating, r.grade, r.helpful_rating, r.isOnlineClass 
+            SELECT r.class_name, r.date, r.clarity_rating, r.difficulty_rating, r.grade, r.helpful_rating, r.isOnlineClass, r.thumbsUp, r.thumbsDown, r.comment
             FROM reviews AS r 
             INNER JOIN teachers as t
             ON t.teacher_id = r.teacher_id

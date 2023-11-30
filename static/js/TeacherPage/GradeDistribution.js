@@ -35,20 +35,18 @@ function map_class_to_avgGrade(reviews_data) {
     };
 
     let class_to_gradeTuple = {}; // {"CS123": (sumOfGrades, numGrades)}
-    for (let review of reviews_data) {
-        let [course_code, date, quality, difficulty, grade, helpfulRating, isOnlineClass] = review;
+    for (let [course_code, date, quality, difficulty, grade, helpfulRating, isOnlineClass] of reviews_data) {
         if (!(grade in grade_to_GPA)) continue;
-        let grade_val = grade_to_GPA[grade];
+        let gpa = grade_to_GPA[grade];
         if (!(course_code in class_to_gradeTuple)) {
-            class_to_gradeTuple[course_code] = [grade_val, 1];
+            class_to_gradeTuple[course_code] = [gpa, 1];
         } else {
-            class_to_gradeTuple[course_code] = [class_to_gradeTuple[course_code][0]+grade_val, class_to_gradeTuple[course_code][1]+1];
+            class_to_gradeTuple[course_code][0] += gpa;
+            class_to_gradeTuple[course_code][1]++;
         }
     }
-
     let class_to_avgGrade = {};
-    for (let [class_code, arr] of Object.entries(class_to_gradeTuple)) {
-        let [summed_grades, numReviews] = arr;
+    for (let [class_code, [summed_grades, numReviews]] of Object.entries(class_to_gradeTuple)) {
         let avgGrade = summed_grades / numReviews;
         class_to_avgGrade[`${class_code} (${numReviews})`] = Math.max(Math.round(avgGrade/0.25)*0.25, 0.5);
     }

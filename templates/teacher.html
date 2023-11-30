@@ -33,6 +33,14 @@
     <div class="chart-container progression-container" style="height:60vh">
         <canvas id="progression"></canvas>
     </div>
+    <div class="sample-reviews">
+        <div class="positive-review">
+            <h1>Most Popular Positive Review</h1>
+        </div>
+        <div class="negative-review">
+            <h1>Most Popular Negative Review</h1>
+        </div>
+    </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -41,10 +49,13 @@
     // read in the data passed in from the backend
     let teacher_data = JSON.parse('{{ teacher_data | tojson }}');
     console.log(teacher_data);
-    let reviews_data = JSON.parse('{{ all_reviews | tojson }}'); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
-    console.log(reviews_data);
+    // let reviews_data = JSON.parse('{{ all_reviews | tojson }}'); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
+    let reviews_data = JSON.parse({{ all_reviews | tojson }}); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
+    // console.log(reviews_data.sort((a,b) => b[7]-a[7]));
+
 </script>
 <script src="{{ url_for('static', filename='js/TeacherPage/GradeDistribution.js') }}"></script>
 <script src="{{ url_for('static', filename='js/TeacherPage/DifficultyRatingDistribution.js') }}"></script>
 <script src="{{ url_for('static', filename='js/TeacherPage/QualityRatingGraph.js') }}"></script>
+<script src="{{ url_for('static', filename='js/TeacherPage/SampleReviews.js') }}"></script>
 </html>
