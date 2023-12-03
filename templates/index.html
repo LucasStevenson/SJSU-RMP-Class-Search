@@ -50,7 +50,11 @@
                     {% else %}
                         {{ class[8] }}
                     {% endif %}
-                    <td class="instruct-rating"><a href="{{ url_for('show_teacher_page', name=class[8]) }}"><b>{{ class[9] }}</b></a></td>
+                    {% if class[9] != "N/A" %}
+                        <td class="instruct-rating"><a href="{{ url_for('show_teacher_page', name=class[8]) }}"><b>{{ class[9] }}</b></a></td>
+                    {% else %}
+                        <td class="instruct-rating"><b>{{ class[9] }}</b></td>
+                    {% endif %}
                 <td class="class-location">{{ class[10] }}</td>
                 <td class="class-dates">{{ class[11] }}</td>
                 <td class="open-seats">{{ class[12] }}</td>

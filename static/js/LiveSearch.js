@@ -40,8 +40,12 @@ function updateTable(trie_results, courseCode_to_classData, teacherName_to_legac
         } else {
             data += `${classData[8]}`;
         }
+        if (classData[9] !== "N/A") {
+            data += `<td class="instruct-rating"><a href='/teacher/${classData[8]}'><b>${classData[9]}</b></a></td>`;
+        } else {
+            data += `<td class="instuct-rating"><b>${classData[9]}</b></td>`;
+        }
         data += `
-            <td class="instruct-rating"><a href='/teacher/${classData[8]}'><b>${classData[9]}</b></a></td>
             <td class="class-location">${classData[10]}</td>
             <td class="class-dates">${classData[11]}</td>
             <td class="open-seats">${classData[12]}</td>
