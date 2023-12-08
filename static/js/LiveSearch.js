@@ -14,14 +14,13 @@ function addColorToTable() {
     }
 }
 
-function updateTable(trie_results, courseCode_to_classData, teacherName_to_legacyID) {
+function updateTableData(trie_results, courseCode_to_classData, teacherName_to_legacyID) {
     let tableBody = document.getElementById("table-body");
 
     // clear all the data that is currently inside the table body
     tableBody.innerHTML = '';
 
-    // for (let i = (page-1)*20; i < Math.min(trie_results.length, i+20); i++) {
-    for (let i = 0; i < Math.min(trie_results.length, 20); i++) {
+    for (let i = (page-1)*RESULTS_PER_PAGE; i < Math.min(trie_results.length, RESULTS_PER_PAGE*page); i++) {
         let classData = courseCode_to_classData[trie_results[i]]; // the table row data
         let data = `
         <tr>
@@ -70,11 +69,37 @@ all_classes.forEach(classTitle => trie.insert(classTitle));
 const searchBar = document.querySelector(".text-input");
 
 // Event listener for keyup
-searchBar.addEventListener("keyup", function () {
+searchBar.addEventListener("input", function (e) {
+    setPageNumber(1);
+    updateTable();
+    let table_results = getMatchingClassesFromSearchbar();
+    // hide the pagination bar if there is less than 1 page of results, otherwise show it
+    document.querySelector(".pagination-container").style.display = table_results.length <= RESULTS_PER_PAGE ? "none" : "block";
+});
+
+function setPageNumber(pageNum) {
+    page = pageNum;
+    document.querySelector(".active").innerText = page;
+    // hide or show the `prev` button depending on if we're on first page or not
+    document.querySelector(".prev").style.display = page === 1 ? "none" : "block";
+    // hide or show the `next` button depending on if we're on the last page or not
+    let table_results = getMatchingClassesFromSearchbar();
+    document.querySelector(".next").style.display = table_results.slice(page*RESULTS_PER_PAGE).length < 1 ? "none" : "block";
+}
+
+function getMatchingClassesFromSearchbar() {
     let searchText = searchBar.value.trim().toLowerCase();
     let results = trie.search(searchText);
-    console.log(searchText);
-    console.log(results);
-    updateTable(results, courseCode_to_classData, teacherName_to_legacyID);
+    return results;
+}
+
+function updateTable() {
+    let table_results = getMatchingClassesFromSearchbar();
+    updateTableData(table_results, courseCode_to_classData, teacherName_to_legacyID);
     addColorToTable();
-});
+}
+
+function showPageData(pageNum) {
+    setPageNumber(pageNum);
+    updateTable();
+}

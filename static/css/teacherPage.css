@@ -84,14 +84,15 @@ h4 {
 
 .positive-review,
 .negative-review {
-    width: 48%; /* Adjust as needed */
+    width: 48%; 
     border: 1px solid #ddd;
-    border-radius: 8px;
     padding: 15px;
     margin: 15px 0;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     transition: box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .positive-review h1,
@@ -100,12 +101,6 @@ h4 {
     color: #333;
     margin-bottom: 10px;
 }
-
-.positive-review:hover,
-.negative-review:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
 
 /* review cards */
 .professor-card {
@@ -140,17 +135,4 @@ h4 {
 
 .comments p {
     margin: 0;
-}
-
-.tags {
-    margin-top: 10px;
-}
-
-.tag {
-    background-color: #0077b6;
-    color: #fff;
-    border-radius: 3px;
-    padding: 2px 5px;
-    margin-right: 5px;
-    font-size: 12px;
 }

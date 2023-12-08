@@ -6,11 +6,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def homepage():
-    # page = request.args.get("page", type=int, default=1)
-    # per_page = 20  # Number of items to display per page
-    # start = (page - 1) * per_page
-    # end = start + per_page
-    # paginated_classes = all_classes[start:end]
     all_classes = database.select_all_classes()
     teacherName_to_legacyID = { name: legacyID for name, legacyID in database.select_teacherName_and_legacyID() }
     return render_template("index.html", all_classes=all_classes, teacherName_to_legacyID=teacherName_to_legacyID)
