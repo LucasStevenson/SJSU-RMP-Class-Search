@@ -50,7 +50,6 @@
     let teacher_data = JSON.parse('{{ teacher_data | tojson }}');
     console.log(teacher_data);
     let reviews_data = JSON.parse({{ all_reviews | tojson }}); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
-    // console.log(reviews_data.sort((a,b) => b[7]-a[7]));
 
 </script>
 <script src="{{ url_for('static', filename='js/TeacherPage/GradeDistribution.js') }}"></script>
