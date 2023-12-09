@@ -15,9 +15,9 @@ def unique_skip(func):
 def init_db():
     """Creates all the tables in the db
     PARAMS:
-        cur: sqlite3 cursor object
+        Nothing
     RETURNS:
-        sqlite3 connection object
+        Nothing
     """
     cur = conn.cursor()
     cur.execute("""
