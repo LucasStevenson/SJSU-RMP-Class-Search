@@ -2,6 +2,8 @@
 
 ## Demo
 
+https://github.com/LucasStevenson/SJSU-RMP-Class-Search/assets/45473315/f6818719-e729-4ba7-bf2d-a50f38d6854f
+
 
 ## How to run this application in Docker
 
