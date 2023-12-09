@@ -1,4 +1,35 @@
-function addColorToTable() {
+const searchBar = document.querySelector(".text-input");
+let trie;
+let courseCode_to_classData = {};
+let teacherName_to_legacyID;
+
+(async () => {
+    // fetch all the class data from the backend
+    let classData = await fetch("/api/data/all_classes");
+    let all_classes = await classData.json();
+    // fetch the dict that maps teacher names to their legacyID
+    let data = await fetch("/api/data/teacherName_to_legacyID");
+    teacherName_to_legacyID = await data.json() // ex. { "Bob Smith": 123456, ... }
+
+    for (let classData of all_classes) {
+        courseCode_to_classData[classData[0].toLowerCase()] = classData;
+    }
+
+    all_classes = all_classes.map(x => x[0]); // only want to search via course codes. Ex. CS 152
+    trie = new Trie();
+    // insert data into the trie
+    all_classes.forEach(classTitle => trie.insert(classTitle)); 
+
+    // show page 1 data on initial page load
+    showPageData(1);
+
+    // Event listener for searchbar input change
+    searchBar.addEventListener("input", function (e) {
+        showPageData(1);
+    });
+})();
+
+function _addColorToTable() {
     let instruct_ratings = document.querySelectorAll(".instruct-rating");
     // logic to update the color of the instructor rating on the table depending on their rating
     for (let rating_tag of instruct_ratings) {
@@ -14,14 +45,13 @@ function addColorToTable() {
     }
 }
 
-function updateTable(trie_results, courseCode_to_classData, teacherName_to_legacyID) {
+function _updateTableData(trie_results) {
     let tableBody = document.getElementById("table-body");
 
     // clear all the data that is currently inside the table body
     tableBody.innerHTML = '';
 
-    // for (let i = (page-1)*20; i < Math.min(trie_results.length, i+20); i++) {
-    for (let i = 0; i < Math.min(trie_results.length, 20); i++) {
+    for (let i = (page-1)*RESULTS_PER_PAGE; i < Math.min(trie_results.length, RESULTS_PER_PAGE*page); i++) {
         let classData = courseCode_to_classData[trie_results[i]]; // the table row data
         let data = `
         <tr>
@@ -55,26 +85,26 @@ function updateTable(trie_results, courseCode_to_classData, teacherName_to_legac
     }
 }
 
-addColorToTable();
-
-let courseCode_to_classData = {};
-for (let classData of all_classes) {
-    courseCode_to_classData[classData[0].toLowerCase()] = classData;
+function _setPageNumber(pageNum, table_results) {
+    page = pageNum;
+    document.querySelector(".active").innerText = page;
+    // hide or show the `prev` button depending on if we're on first page or not
+    document.querySelector(".prev").style.display = page === 1 ? "none" : "block";
+    // hide or show the `next` button depending on if we're on the last page or not
+    document.querySelector(".next").style.display = table_results.slice(page*RESULTS_PER_PAGE).length < 1 ? "none" : "block";
 }
 
-all_classes = all_classes.map(x => x[0]); // only want to search via course codes. Ex. CS 152
-const trie = new Trie();
-// insert data into the trie
-all_classes.forEach(classTitle => trie.insert(classTitle)); 
-
-const searchBar = document.querySelector(".text-input");
-
-// Event listener for keyup
-searchBar.addEventListener("keyup", function () {
+function _getMatchingClassesFromSearchbar() {
     let searchText = searchBar.value.trim().toLowerCase();
     let results = trie.search(searchText);
-    console.log(searchText);
-    console.log(results);
-    updateTable(results, courseCode_to_classData, teacherName_to_legacyID);
-    addColorToTable();
-});
+    return results;
+}
+
+function showPageData(pageNum) {
+    let table_results = _getMatchingClassesFromSearchbar();
+    _setPageNumber(pageNum, table_results);
+    _updateTableData(table_results);
+    _addColorToTable();
+    // hide the pagination bar if there is less than 1 page of results, otherwise show it
+    document.querySelector(".pagination-container").style.display = table_results.length <= RESULTS_PER_PAGE ? "none" : "block";
+}

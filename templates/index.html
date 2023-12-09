@@ -33,43 +33,20 @@
                 <th>Open Seats</th>
             </tr>
         </thead>
-        <tbody id="table-body">
-            {% for class in all_classes[0:20] %}
-            <tr>
-                <td class="class-section">{{ class[0] }}</td>
-                <td class="class-number">{{ class[1] }}</td>
-                <td class="mode-instruct">{{ class[2] }}</td>
-                <td class="course-title">{{ class[3] }}</td>
-                <td class="class-units">{{ class[4] }}</td>
-                <td class="class-type">{{ class[5] }}</td>
-                <td class="class-days">{{ class[6] }}</td>
-                <td class="class-times">{{ class[7] }}</td>
-                <td class="class-instruct">
-                    {% if class[8] in teacherName_to_legacyID %}
-                        <a href="https://ratemyprofessors.com/professor/{{ teacherName_to_legacyID[class[8]] }}" target="_blank">{{ class[8] }}</a>
-                    {% else %}
-                        {{ class[8] }}
-                    {% endif %}
-                    {% if class[9] != "N/A" %}
-                        <td class="instruct-rating"><a href="{{ url_for('show_teacher_page', name=class[8]) }}"><b>{{ class[9] }}</b></a></td>
-                    {% else %}
-                        <td class="instruct-rating"><b>{{ class[9] }}</b></td>
-                    {% endif %}
-                <td class="class-location">{{ class[10] }}</td>
-                <td class="class-dates">{{ class[11] }}</td>
-                <td class="open-seats">{{ class[12] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="table-body"></tbody>
     </table>
-    <!-- TODO: Add Pagination Controls -->
+    <!-- Pagination Controls -->
+    <div class="pagination-container">
+        <ul class="pagination modal-1">
+            <li><button style="display:none" onclick="showPageData(page-1)" class="prev">&laquo</button></li>
+            <li><button class="active">1</button></li>
+            <li><button onclick="showPageData(page+1)" class="next">&raquo;</button></li>
+        </ul>
+    </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script type=text/javascript>
-    let all_classes = JSON.parse('{{ all_classes | tojson }}');
-    let teacherName_to_legacyID = JSON.parse('{{ teacherName_to_legacyID | tojson }}'); // ex. { "Bob Smith": 123456, ... }
-
     let page = 1;
     const RESULTS_PER_PAGE = 20;
 </script>
