@@ -19,4 +19,4 @@ $ docker build . -t sjsu-rmp-class-search
 $ docker run --rm -p 5000:5000 -t sjsu-rmp-class-search
 ```
 
-Open `http://localhost:8000` in your web browser
+Open `http://localhost:5000` in your web browser
