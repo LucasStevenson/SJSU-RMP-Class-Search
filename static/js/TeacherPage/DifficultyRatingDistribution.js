@@ -17,59 +17,61 @@ function map_class_to_difficultyRating(reviews_data) {
     return class_to_avgDifficulty;
 }
 
-let class_to_avgDifficulty = map_class_to_difficultyRating(reviews_data);
-let course_codes = Object.keys(class_to_avgDifficulty);
-let avgDifficulties = Object.values(class_to_avgDifficulty);
+function plotDifficultyChart(reviews_data) {
+    let class_to_avgDifficulty = map_class_to_difficultyRating(reviews_data);
+    let course_codes = Object.keys(class_to_avgDifficulty);
+    let avgDifficulties = Object.values(class_to_avgDifficulty);
 
-// Create a bar chart
-let diffCtx = document.getElementById('avgDifficulties');
-new Chart(diffCtx, {
-    type: 'bar',
-    data: {
-        labels: course_codes,
-        datasets: [{
-            label: 'Grades',
-            data: avgDifficulties,
-            backgroundColor: [
-              'rgba(229, 168, 35, 0.4)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                position: top
-            },
-            title: {
-                display: true,
-                text: "Average difficulty per class",
-                font: { size: 18 }
-            }
+    // Create a bar chart
+    let diffCtx = document.getElementById('avgDifficulties');
+    new Chart(diffCtx, {
+        type: 'bar',
+        data: {
+            labels: course_codes,
+            datasets: [{
+                label: 'Grades',
+                data: avgDifficulties,
+                backgroundColor: [
+                    'rgba(229, 168, 35, 0.4)',
+                ],
+                borderWidth: 1
+            }]
         },
-        scales: {
-            x: {
+        options: {
+            plugins: {
+                legend: {
+                    position: top
+                },
                 title: {
                     display: true,
-                    text: 'Course Code (Number of Reviews)',
-                    font: { size: 14, weight: "bold" }
-                },
-                type: 'category',
-                position: 'bottom'
+                    text: "Average difficulty per class",
+                    font: { size: 18 }
+                }
             },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Average Difficulty',
-                    font: { size: 14, weight: "bold" }
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Course Code (Number of Reviews)',
+                        font: { size: 14, weight: "bold" }
+                    },
+                    type: 'category',
+                    position: 'bottom'
                 },
-                max: 5,
-                min: 0,
-                ticks: {
-                    stepSize: 1,
-                    autoSkip: false
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Average Difficulty',
+                        font: { size: 14, weight: "bold" }
+                    },
+                    max: 5,
+                    min: 0,
+                    ticks: {
+                        stepSize: 1,
+                        autoSkip: false
+                    }
                 }
             }
         }
-    }
-});
+    });
+}

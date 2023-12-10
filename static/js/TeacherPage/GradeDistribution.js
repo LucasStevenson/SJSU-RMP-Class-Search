@@ -53,62 +53,64 @@ function map_class_to_avgGrade(reviews_data) {
     return class_to_avgGrade;
 }
 
-let class_to_avgGrade = map_class_to_avgGrade(reviews_data);
-console.log(class_to_avgGrade);
-let labels = Object.keys(class_to_avgGrade);
-let values = Object.values(class_to_avgGrade);
+function plotGradesChart(reviews_data) {
+    let class_to_avgGrade = map_class_to_avgGrade(reviews_data);
+    console.log(class_to_avgGrade);
+    let labels = Object.keys(class_to_avgGrade);
+    let values = Object.values(class_to_avgGrade);
 
-// Create a bar chart
-let gradesCtx = document.getElementById('avgGrades');
-new Chart(gradesCtx, {
-    type: 'bar',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Grades',
-            data: values,
-            backgroundColor: [
-              // 'rgba(229, 168, 35, 0.4)',
-              'rgba(0, 86, 162, 0.4)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                position: top
-            },
-            title: {
-                display: true,
-                text: "Average grades per class",
-                font: { size: 18 }
-            }
+    // Create a bar chart
+    let gradesCtx = document.getElementById('avgGrades');
+    new Chart(gradesCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Grades',
+                data: values,
+                backgroundColor: [
+                    // 'rgba(229, 168, 35, 0.4)',
+                    'rgba(0, 86, 162, 0.4)',
+                ],
+                borderWidth: 1
+            }]
         },
-        scales: {
-            x: {
+        options: {
+            plugins: {
+                legend: {
+                    position: top
+                },
                 title: {
                     display: true,
-                    text: 'Course Code (Number of Reviews)',
-                    font: { size: 14, weight: "bold" }
-                },
-                type: 'category',
-                position: 'bottom'
+                    text: "Average grades per class",
+                    font: { size: 18 }
+                }
             },
-            y: {
-                title: {
-                    display: true,
-                    text: 'Average Grade',
-                    font: { size: 14, weight: "bold" }
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Course Code (Number of Reviews)',
+                        font: { size: 14, weight: "bold" }
+                    },
+                    type: 'category',
+                    position: 'bottom'
                 },
-                min: 0,
-                max: 4,
-                ticks: {
-                    callback: function(value, index, ticks) {
-                        return grade_int_to_letter[value];
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Average Grade',
+                        font: { size: 14, weight: "bold" }
+                    },
+                    min: 0,
+                    max: 4,
+                    ticks: {
+                        callback: function(value, index, ticks) {
+                            return grade_int_to_letter[value];
+                        }
                     }
                 }
             }
         }
-    }
-});
+    });
+}

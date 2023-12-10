@@ -22,19 +22,23 @@ function displayReview(review_arr, posOrNeg) {
     `
 }
 
-// show the 3 most recent negative reviews (quality < 4)
-let lowest = reviews_data.filter(x => x[2] < 4).sort((a,b) => b[1] - a[1]).slice(0, 3);
-// show the 3 most recent positive reviews (quality >= 4) 
-let highest = reviews_data.filter(x => x[2] >= 4).sort((a,b) => b[1] - a[1]).slice(0, 3);
+function showSampleReviews(reviews_data) {
+    // show the 3 most recent negative reviews (quality < 4)
+    let negative_reviews = reviews_data.filter(x => x[2] < 4).sort((a,b) => b[1] - a[1]).slice(0, 3);
+    // show the 3 most recent positive reviews (quality >= 4) 
+    let positive_reviews = reviews_data.filter(x => x[2] >= 4).sort((a,b) => b[1] - a[1]).slice(0, 3);
 
-// display all the lowest reviews
-for (let x of lowest) {
-    displayReview(x, "negative");
-}
+    // display all the lowest reviews
+    for (let x of negative_reviews) {
+        displayReview(x, "negative");
+    }
 
-// display all the highest reviews
-for (let x of highest) {
-    displayReview(x, "positive");
+    // display all the highest reviews
+    for (let x of positive_reviews) {
+        displayReview(x, "positive");
+    }
+    // adjust heights of adjacent reviews so that they match
+    adjustAdjReviewHeights(negative_reviews, positive_reviews);
 }
 
 // below is the logic to make sure that the positive and negative reviews next to one another are the same height
@@ -49,15 +53,17 @@ function getElementHeight(element) {
     return heightExcludingPaddingAndBorder;
 }
 
-let shorterDiv = lowest.length < highest.length ? document.querySelector(".negative-review") : document.querySelector(".positive-review");
-let longerDiv = lowest.length < highest.length ? document.querySelector(".positive-review") : document.querySelector(".negative-review");
+function adjustAdjReviewHeights(negative_reviews, positive_reviews) {
+    let shorterDiv = negative_reviews.length < positive_reviews.length ? document.querySelector(".negative-review") : document.querySelector(".positive-review");
+    let longerDiv = negative_reviews.length < positive_reviews.length ? document.querySelector(".positive-review") : document.querySelector(".negative-review");
 
-let shorterChildren = shorterDiv.querySelectorAll(".professor-card");
-let longerChildren  = longerDiv.querySelectorAll(".professor-card");
+    let shorterChildren = shorterDiv.querySelectorAll(".professor-card");
+    let longerChildren  = longerDiv.querySelectorAll(".professor-card");
 
-for (let i = 0; i < shorterChildren.length; i++) {
-    let [shorterReview, longerReview] = [shorterChildren[i], longerChildren[i]];
-    let biggerHeight = Math.max(getElementHeight(shorterReview), getElementHeight(longerReview));
-    shorterReview.setAttribute("style", `height: ${biggerHeight}px`);
-    longerReview.setAttribute("style", `height: ${biggerHeight}px`);
+    for (let i = 0; i < shorterChildren.length; i++) {
+        let [shorterReview, longerReview] = [shorterChildren[i], longerChildren[i]];
+        let biggerHeight = Math.max(getElementHeight(shorterReview), getElementHeight(longerReview));
+        shorterReview.setAttribute("style", `height: ${biggerHeight}px`);
+        longerReview.setAttribute("style", `height: ${biggerHeight}px`);
+    }
 }
