@@ -49,7 +49,15 @@
     // read in the data passed in from the backend
     let teacher_data = JSON.parse('{{ teacher_data | tojson }}');
     console.log(teacher_data);
-    let reviews_data = JSON.parse({{ all_reviews | tojson }}); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass], ...]
+    (async () => {
+        let rawReviewsData = await fetch(`/api/data/all_reviews/${teacher_data[0][1]}`);
+        let reviews_data = await rawReviewsData.json();
+        // display all the data on the teacher page
+        plotDifficultyChart(reviews_data);
+        plotGradesChart(reviews_data);
+        plotQualityGraph(reviews_data);
+        showSampleReviews(reviews_data);
+    })();
 
 </script>
 <script src="{{ url_for('static', filename='js/TeacherPage/GradeDistribution.js') }}"></script>
