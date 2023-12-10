@@ -9,7 +9,6 @@
     <div style="background-color: #f6f6f6">
         <div class="instruct_overview">
             <h1><span>{{ teacher_data[0][4] }}</span>/5</h1>
-            <!-- <h3>Overall Quality Based on {{ teacher_data.length }} ratings</h3> -->
             <h1 id="teacher_name">{{ teacher_data[0][1] }}</h1>
             <h3>Professor in the <u>{{ teacher_data[0][2] }}</u> department at San Jose State University</h3>
             <div class="important-info">
@@ -51,7 +50,7 @@
     console.log(teacher_data);
     (async () => {
         let rawReviewsData = await fetch(`/api/data/all_reviews/${teacher_data[0][1]}`);
-        let reviews_data = await rawReviewsData.json();
+        let reviews_data = await rawReviewsData.json(); // [[CS123, "2022-10-02", quality, difficulty, grade, helpfulrating, isOnlineClass, ...], ...]
         // display all the data on the teacher page
         plotDifficultyChart(reviews_data);
         plotGradesChart(reviews_data);
